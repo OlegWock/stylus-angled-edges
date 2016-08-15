@@ -1,0 +1,83 @@
+//-------------------------------------------------------------------------------------
+// Stylus Angled Edges v1.0 (https://github.com/OlegWock/stylus-angled-edges)
+// Copyright 2016 OlegWock
+// Licensed under MIT (https://github.com/OlegWock/stylus-angled-edges/blob/master/LICENSE)
+//-------------------------------------------------------------------------------------
+
+ae-str-replace(string, search, replace='')
+    replace(search, replace, string)
+    
+
+ae-svg-encode(string)
+    result = ae-str-replace(string, '<svg', "<svg xmlns='http://www.w3.org/2000/svg'")
+    result = ae-str-replace(result, '%', '%25')
+    result = ae-str-replace(result, '"', '%22')
+    result = ae-str-replace(result, "'", '%27')
+    result = ae-str-replace(result, ' ', '%20')
+    result = ae-str-replace(result, '<', '%3C')
+    result = ae-str-replace(result, '>', '%3E')
+    return 'data:image/svg+xml,' + result
+
+ae-pseudo(wedge, height) 
+    background-image url(wedge)
+    background-position center center
+    background-repeat no-repeat
+    content ''
+    height height * 1px
+    left 0
+    position absolute
+    right 0
+    width 100%
+    z-index 1
+
+
+angled-edge(location, hypotenuse, fill, width=2800, height=100) 
+
+    position relative
+
+    // polygon points for right triangle
+    points = {
+        'upper left': s('0,%s %s,%s %s,0', height, width, height, width),
+        'upper right': s('0,%s %s,%s 0,0', height, width, height),
+        'lower left': s('0,0 %s,%s %s,0', width, height, width),
+        'lower right': s('0,0 %s,0 0,%s', width, height)
+    }
+    
+    // ensure fill color is using rgb()
+    fill-rgb = 'rgb(' + round(red(fill)) + ',' + round(green(fill)) + ',' + round(blue(fill)) + ')'
+
+    // capture alpha component of fill to use with fill-opacity
+    fill-alpha = alpha(fill)
+
+    wedge = ae-svg-encode(s('<svg height="%s" width="%s" fill=%s fill-opacity="%s"><polygon points="%s"></polygon></svg>', height, width, fill-rgb, fill-alpha, points[hypotenuse]))
+
+    if location == 'inside top' 
+        &::before 
+            ae-pseudo(wedge, height)
+            top 0
+        
+    else if location == 'outside top'
+        &::before
+            ae-pseudo(wedge, height)
+            top -(height * 1px)
+        
+    else if location == 'inside bottom'
+        &::after
+            ae-pseudo(wedge, height)
+            bottom 0
+        
+    else if location == 'outside bottom'
+        &::after
+            ae-pseudo(wedge, height)
+            bottom -(height * 1px)
+        
+    else
+        error("Invalid argument for location - must use: `inside top`, `outside top`, `inside bottom`, `outside bottom`")
+    
+    unless points[hypotenuse]
+        error("Invalid argument for hypotenuse - must use: `upper left`, `upper right`, `lower left`, `lower right`")
+        
+.my-angle 
+    angled-edge('outside bottom','lower right', #EE3924)
+
+    
