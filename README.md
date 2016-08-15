@@ -6,10 +6,10 @@ This is a port of [SASS Angled Edges](https://github.com/josephfusco/angled-edge
 
 ## Usage
 
-Copy file **angeled-edges.styl** to your project and import it
+Copy file **angled-edges.styl** to your project and import it
 
 ```stylus
-@import 'angeled-edges'
+@import 'angled-edges'
 ```
 
 Now you can use **angled-adge** mixin
