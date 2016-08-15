@@ -12,7 +12,7 @@ Copy file **angled-edges.styl** to your project and import it
 @import 'angled-edges'
 ```
 
-Now you can use **angled-adge** mixin
+Now you can use **angled-edge** mixin
 
 ```stylus
 angled-edge(location, hypotenuse, fill, width=2800, height=100)
